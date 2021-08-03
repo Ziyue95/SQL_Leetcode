@@ -1,12 +1,11 @@
 # Write your MySQL query statement below
-WITH DepartmentMaxSalary AS (
-    SELECT DepartmentId AS Id, Department.Name AS CName, MAX(Salary) AS MaxSalary
-    FROM Employee INNER JOIN Department
-    ON Employee.DepartmentId = Department.Id
-    GROUP BY DepartmentId
-)
-SELECT DepartmentMaxSalary.CName AS Department, Employee.Name AS Employee, Employee.Salary 
-FROM Employee INNER JOIN DepartmentMaxSalary
-ON Employee.DepartmentId = DepartmentMaxSalary.Id
-WHERE Employee.Salary = DepartmentMaxSalary.MaxSalary;
+SELECT E.Name AS Department, Employee.Name AS Employee, Employee.Salary AS Salary
+FROM Employee JOIN (
+    SELECT Department.Id, Department.Name, MAX(Employee.Salary) AS MSalary 
+    FROM Department JOIN Employee
+    ON Department.Id = Employee.DepartmentId
+    GROUP BY Department.Name
+) E
+ON Employee.DepartmentId = E.Id
+WHERE Employee.Salary = E.MSalary;
 
